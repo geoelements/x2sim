@@ -26,63 +26,90 @@
 <body>
 
 
-    <section class="hero">
-      <div class="hero-body">
-        <div class="container is-max-desktop">
-          <div class="columns is-centered">
-            <div class="column has-text-centered">
-              <h1 class="title is-1 publication-title">X2Sim: Rapid digital twin creation from text and videos for natural hazard modeling</h1>
-              <div class="is-size-5 publication-authors">
-                <!-- Paper authors -->
-                <span class="author-block">
-                  Jonathan Gaucin</a><sup>1</sup>,</span>
-                  <span class="author-block">
-                    Cristian Moran</a><sup>2</sup>,</span>
-                    <span class="author-block">
-                      Cheng-Hsi Hsiao</a><sup>3</sup>,</span>
-                      <span class="author-block">
-                        Justin Bonus</a><sup>4</sup>, and</span>
-                        <span class="author-block">
-                          Krishna Kumar</a><sup>3</sup></span>
-                    </span>
-                    </div>
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            
+            <!-- Title -->
+            <h1 class="title is-1 publication-title">
+              X2Sim: Rapid digital twin creation from text and videos for natural hazard modeling
+            </h1>
   
-                    <div class="is-size-5 publication-authors">
-                      <span class="author-block">
-                        <small>
-                            <sup>1</sup> University of Houston,
-                            <sup>2</sup> Texas A&M University,
-                            <sup>3</sup> University of Texas at Austin,
-                            <sup>4</sup> University of California, Berkeley
-                        </small>
-                    </div>
-
-<!-- Pagoda gif -->
-<section class="hero is-small">
-    <div class="container is-max-desktop">
-        <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-            <img src="static/gifs/japanese_pagoda_mpm_1000.gif"/>
-        </div>
-        </div>
-    </div>
-    </section>
-</body>
-</html>
-
-<!-- Paper abstract -->
-<section class="section hero is-light">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Abstract</h2>
-          <div class="content has-text-justified">
-            <p>
-                Traditional methods for modeling natural hazards such as landslides, floods, and storm surges are computationally intensive and time-consuming, thus limiting their applicability in effective disaster preparedness and response in real-world scenarios. To address this challenge, we present a novel framework, through TACC HPC resources, for rapidly creating digital twins that significantly reduces the time, manual input, and computational resources needed for simulating the interaction between natural hazards and real-world 3D objects. Our X2Sim framework utilizes an agentic text-to-simulation Large Language Model (LLM) to generate digital twins, integrating two distinct 3D object generation methods: (i) A text-to-3D point cloud diffusion model that swiftly creates 3D point clouds from natural language descriptions, enabling rapid digital twin prototyping, and (ii) An efficient method for constructing high-fidelity point clouds from video input, allowing for more detailed digital twin representations of existing structures. These digital twins are integrated into a Graph Network-based Simulator (GNS) that models the dynamics of particle and fluid interactions, enabling the simulation of complex natural hazard scenarios. Our X2Sim system allows for adjusting simulation parameters, offering a robust tool for exploring various disaster scenarios and their impacts on the digital twins. While our digital twin framework may not match the accuracy of high-fidelity numerical methods, it significantly reduces computation time and complexity, making it viable for near-real-time applications. The X2Sim approach offers a valuable balance between speed and precision in digital twin creation and simulation, providing a streamlined, low-intervention workflow for researchers and practitioners in natural hazard modeling and disaster preparedness.
-            </p>
+            <!-- Authors List -->
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">Jonathan Gaucin<sup>1</sup>,</span>
+              <span class="author-block">Cristian Moran<sup>2</sup>,</span>
+              <span class="author-block">Cheng-Hsi Hsiao<sup>3</sup>,</span>
+              <span class="author-block">Justin Bonus<sup>4</sup>, and</span>
+              <span class="author-block">Krishna Kumar<sup>3</sup></span>
+            </div>
+  
+            <!-- Affiliations -->
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <small>
+                  <sup>1</sup> University of Houston, 
+                  <sup>2</sup> Texas A&M University, 
+                  <sup>3</sup> University of Texas at Austin, 
+                  <sup>4</sup> University of California, Berkeley
+                </small>
+              </span>
+            </div>
+  
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- Pagoda Section -->
+  <section class="hero is-small">
+    <div class="container is-max-desktop">
+      
+      <!-- Media Row: Image, Video, and GIF -->
+      <div class="columns is-centered has-text-centered">
+    
+        <!-- Static Image -->
+        <div class="column is-one-third">
+          <img src="static/images/pagoda.png" style="max-width: 100%; height: auto;" alt="Pagoda image"/>
+        </div>
+    
+        <!-- Video -->
+        <div class="column is-one-third">
+          <video width="100%" controls>
+            <source src="static/videos/pagoda_trellis.mp4" type="video/mp4">
+            Your browser does not support video.
+          </video>
+        </div>
+    
+        <!-- GIF -->
+        <div class="column is-one-third">
+          <img src="static/gifs/japanese_pagoda_mpm_1000.gif" style="max-width: 150%; height: auto;" alt="Pagoda MPM simulation"/>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Paper abstract -->
+  <section class="section hero is-light">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Abstract</h2>
+            <div class="content has-text-justified">
+              <p>
+                  Traditional methods for modeling natural hazards such as landslides, floods, and storm surges are computationally intensive and time-consuming, thus limiting their applicability in effective disaster preparedness and response in real-world scenarios. To address this challenge, we present a novel framework, through TACC HPC resources, for rapidly creating digital twins that significantly reduces the time, manual input, and computational resources needed for simulating the interaction between natural hazards and real-world 3D objects. Our X2Sim framework utilizes an agentic text-to-simulation Large Language Model (LLM) to generate digital twins, integrating two distinct 3D object generation methods: (i) A text-to-3D point cloud diffusion model that swiftly creates 3D point clouds from natural language descriptions, enabling rapid digital twin prototyping, and (ii) An efficient method for constructing high-fidelity point clouds from video input, allowing for more detailed digital twin representations of existing structures. These digital twins are integrated into a Graph Network-based Simulator (GNS) that models the dynamics of particle and fluid interactions, enabling the simulation of complex natural hazard scenarios. Our X2Sim system allows for adjusting simulation parameters, offering a robust tool for exploring various disaster scenarios and their impacts on the digital twins. While our digital twin framework may not match the accuracy of high-fidelity numerical methods, it significantly reduces computation time and complexity, making it viable for near-real-time applications. The X2Sim approach offers a valuable balance between speed and precision in digital twin creation and simulation, providing a streamlined, low-intervention workflow for researchers and practitioners in natural hazard modeling and disaster preparedness.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   <!-- End paper abstract -->
+
+</body>
+</html>

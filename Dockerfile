@@ -27,4 +27,4 @@ ENV TORCH_CUDA_ARCH_LIST="8.0 8.6+PTX"
 RUN /code/TRELLIS/setup.sh && pip3 install openai
 
 
-### test
+### 

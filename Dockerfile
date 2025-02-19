@@ -28,14 +28,3 @@ RUN /code/TRELLIS/setup.sh && pip3 install openai
 
 
 
-## RUN chmod ugo+wrx /code/TRELLIS
-## RUN chmod ugo+wrx /code/TRELLIS/example_text_to_3D.py
-## RUN chmod ugo+wrx /code/TRELLIS/dall-e
-## RUN chmod ugo+wrx /code/TRELLIS/dall-e/images
-## RUN chmod ugo+wrx /code/TRELLIS/dall-e/images/object.png
-
-
-### ENTRYPOINT python3 
-### RUN dnf -y install gcc-toolset-11-gcc gcc-toolset-11-gcc-c++
-### RUN echo "source /opt/rh/gcc-toolset-11/enable" >> /etc/bashrc
-### SHELL ["/bin/bash", "--login", "-c"]

@@ -64,7 +64,7 @@ if [ "$HELP" = true ] ; then
 fi
 
 if [ "$NEW_ENV" = true ] ; then
-    pip3 install torch==2.4.0 torchvision==0.19.0 --extra-index-url https://download.pytorch.org/whl/cu118
+    pip3 install torch==2.4.1 torchvision==0.19.0 --extra-index-url https://download.pytorch.org/whl/cu121
 fi
 
 # Get system information
@@ -107,7 +107,8 @@ fi
 
 
 
-pip3 install xformers==0.0.27.post2 --index-url https://download.pytorch.org/whl/cu118
+#pip3 install xformers==0.0.27.post2 --index-url https://download.pytorch.org/whl/cu121
+pip3 install xformers==0.0.28 --index-url https://download.pytorch.org/whl/cu121
 # if [ "$XFORMERS" = true ] ; then
 #     # install xformers
 #     if [ "$PLATFORM" = "cuda" ] ; then
@@ -278,7 +279,7 @@ if [ "$VOX2SEQ" = true ] ; then
 fi
 
 
-pip3 install spconv-cu118
+pip3 install spconv-cu120
 
 # if [ "$SPCONV" = true ] ; then
 #     # install spconv

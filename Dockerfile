@@ -10,7 +10,7 @@ RUN chmod ugo+wrx /code/TRELLIS
 
 ENV PATH="/code:$PATH"
 ENV PATH="/code/TRELLIS:$PATH"
-ENV CUDA_HOME=/usr/local/cuda-12
+ENV CUDA_HOME=/usr/local/cuda-12.2
 ENV LIBRARY_PATH="${CUDA_HOME}/lib64"
 ENV C_INCLUDE_PATH="${CUDA_HOME}/include"
 ENV LD_LIBRARY_PATH=/usr/local/cuda-12/lib64:$LD_LIBRARY_PATH

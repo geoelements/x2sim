@@ -64,7 +64,7 @@ if [ "$HELP" = true ] ; then
 fi
 
 if [ "$NEW_ENV" = true ] ; then
-    pip3 install torch==2.4.1 torchvision==0.19.0 --extra-index-url https://download.pytorch.org/whl/cu121
+    pip3 install torch==2.4.1 torchvision==0.19.1 --extra-index-url https://download.pytorch.org/whl/cu121
 fi
 
 # Get system information
@@ -104,7 +104,6 @@ if [ "$BASIC" = true ] ; then
     pip3 install pillow imageio imageio-ffmpeg tqdm easydict opencv-python-headless scipy ninja rembg onnxruntime trimesh xatlas pyvista pymeshfix igraph transformers
     pip3 install git+https://github.com/EasternJournalist/utils3d.git@9a4eb15e4021b67b12c460c7057d642626897ec8
 fi
-
 
 
 #pip3 install xformers==0.0.27.post2 --index-url https://download.pytorch.org/whl/cu121
@@ -179,6 +178,8 @@ pip3 install flash-attn
 #         echo "[FLASHATTN] Unsupported platform: $PLATFORM"
 #     fi
 # fi
+
+
 
 
 

@@ -36,7 +36,7 @@ pipeline.cuda()
 
 # Generate an image (via DALL-E)
 if re.search(".png$",args.text_input):
-    image = Image.open(arg.text_input)
+    image = Image.open(args.text_input)
     print('Found png image as input. Activating the image-to-3D pipeline.')
 else:
     client = openai.OpenAI()

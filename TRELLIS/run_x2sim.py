@@ -1,6 +1,7 @@
 # Import OS libaries and define backend 
 import os
 import re
+import sys
 
 # os.environ['ATTN_BACKEND'] = 'xformers'   # Can be 'flash-attn' or 'xformers', default is 'flash-attn'
 os.environ['SPCONV_ALGO'] = 'native'        # Can be 'native' or 'auto', default is 'auto'.
@@ -34,10 +35,27 @@ args = parser.parse_args()
 pipeline = TrellisImageTo3DPipeline.from_pretrained("JeffreyXiang/TRELLIS-image-large")
 pipeline.cuda()
 
-# Generate an image (via DALL-E)
+# Initialize image list
+image = []
+
+# Input option 1: Single image (activates image-to-3D pipeline)
 if re.search(".png$",args.text_input):
-    image = Image.open(args.text_input)
+    image.append(Image.open(args.text_input))
     print('Found png image as input. Activating the image-to-3D pipeline.')
+
+# Input option 2: Multi-image (activates multi-image-to-3D pipeline)
+elif os.path.isdir(args.text_input):
+    print('Found directory as input. Looking for images in directory...')   
+    for filename in os.listdir(args.text_input): 
+        if re.search(".png$",filename):
+            image.append(Image.open(args.text_input+'/'+filename))
+    if len(image) > 0:
+        print('Found ' + str(len(image)) + ' images. Activating the image-to-3D pipeline.')  
+    else:
+        print('No images found. Exiting...')
+        sys.exit("No PNG images found in input directory.")
+
+# Input option 3: Text (activates the text-to-3D pipeline)
 else:
     client = openai.OpenAI()
     response = client.images.generate(
@@ -50,24 +68,42 @@ else:
     img_data = response.data[0]
     img_obj = img_data.model_dump()["b64_json"]
     img_buffer = BytesIO(base64.b64decode(img_obj))
-    image = Image.open(img_buffer)
-    image.save('./object2D.png')
+    image.append(Image.open(img_buffer))
+    image[0].save('./object2D.png')
     print('Found text string as input. Activating the text-to-3D pipeline.')
 
+
 # Run the pipeline
-outputs = pipeline.run(
-    image,
-    seed=1,
-    # Optional parameters
-    # sparse_structure_sampler_params={
-    #     "steps": 12,
-    #     "cfg_strength": 7.5,
-    # },
-    # slat_sampler_params={
-    #     "steps": 12,
-    #     "cfg_strength": 3,
-    # },
-)
+if len(image) > 1:
+    outputs = pipeline.run_multi_image(
+        image,
+        seed=1,
+        # Optional parameters
+        # sparse_structure_sampler_params={
+        #     "steps": 12,
+        #     "cfg_strength": 7.5,
+        # },
+        # slat_sampler_params={
+        #     "steps": 12,
+        #     "cfg_strength": 3,
+        # },
+    )
+else:
+    outputs = pipeline.run(
+        image[0],
+        seed=1,
+        # Optional parameters
+        # sparse_structure_sampler_params={
+        #     "steps": 12,
+        #     "cfg_strength": 7.5,
+        # },
+        # slat_sampler_params={
+        #     "steps": 12,
+        #     "cfg_strength": 3,
+        # },
+    )
+
+
 # outputs is a dictionary containing generated 3D assets in different formats:
 # - outputs['gaussian']: a list of 3D Gaussians
 # - outputs['radiance_field']: a list of radiance fields

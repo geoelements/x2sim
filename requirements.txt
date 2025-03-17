@@ -18,8 +18,8 @@ pillow==11.1.0
 imageio==2.36.1
 
 # Video processing
-ffmpeg-python==0.2.0
 yt-dlp==2024.4.5
+opencv-python-headless==4.11.0.86
 
 # LLM tools
 openai==1.58.1

@@ -14,7 +14,6 @@ import tempfile
 import shutil
 from pathlib import Path
 import yt_dlp
-import ffmpeg
 import cv2
 import numpy as np
 from PIL import Image

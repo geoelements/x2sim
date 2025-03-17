@@ -110,8 +110,7 @@ else:
 # - outputs['mesh']: a list of meshes
 
 # Render the outputs
-save_directory = os.path.join(os.getcwd(), "output")
-os.makedirs(save_directory, exist_ok=True)  # Create the directory if it doesn't exist
+save_directory = os.getcwd()
 
 video = render_utils.render_video(outputs['gaussian'][0])['color']
 imageio.mimsave(save_directory+"/sample_gs.mp4", video, fps=30)

@@ -167,11 +167,30 @@ class VideoToPointCloudTool(BaseTool):
             if not frames_dir:
                 return "Error: Failed to extract frames from the video."
             
+            # Check if there are frames in the directory
+            frame_files = [f for f in os.listdir(frames_dir) if f.startswith('frame_') and f.endswith('.png')]
+            if not frame_files:
+                logger.error(f"No frames were extracted to {frames_dir}")
+                return "Error: No frames were extracted from the video."
+            
+            logger.info(f"Successfully extracted {len(frame_files)} frames to {frames_dir}")
+            
             # Process the frames using the videoto3Dexample.sh script
             logger.info(f"Running TRELLIS on frames directory: {frames_dir}")
+            
+            # Check if the script exists
+            script_path = "./videoto3Dexample.sh"
+            if not os.path.exists(script_path):
+                logger.error(f"TRELLIS script not found at: {script_path}")
+                return f"Error: TRELLIS script not found at {script_path}"
+            
+            # Make sure the script is executable
+            os.chmod(script_path, 0o755)
+            
+            # Run the script with the frames directory
             result = subprocess.run(
-                ["./videoto3Dexample.sh", frames_dir],
-                shell=True,
+                [script_path, frames_dir],
+                shell=False,  # Don't use shell=True with array arguments
                 check=False,  # Don't raise exception, handle errors manually
                 capture_output=True,
                 text=True
@@ -180,7 +199,7 @@ class VideoToPointCloudTool(BaseTool):
             # Check if the script execution was successful
             if result.returncode != 0:
                 logger.error(f"TRELLIS processing failed: {result.stderr}")
-                return f"Error: TRELLIS processing failed: {result.stderr}"
+                return f"Error: TRELLIS processing failed. Check logs for details."
             
             # Check if the output file exists
             output_file = os.path.join(os.getcwd(), "preprocessed.ply")
@@ -194,10 +213,6 @@ class VideoToPointCloudTool(BaseTool):
         except Exception as e:
             logger.error(f"Error in video to point cloud processing: {str(e)}")
             return f"Error processing video: {str(e)}"
-
-    async def _arun(self, video_url: str) -> str:
-        """Asynchronous version, not implemented."""
-        raise NotImplementedError("VideoToPointCloud does not support async")
 
     async def _arun(self, video_url: str) -> str:
         """Asynchronous version, not implemented."""
@@ -368,9 +383,15 @@ def run_agent_pipeline(input_data, use_video=False, video_url=None):
     if use_video and video_url:
         if "youtube.com" in video_url or "youtu.be" in video_url:
             logger.info(f"Detected YouTube URL: {video_url}")
-            video_path = download_youtube_video(video_url)
-            if not video_path:
-                logger.error("Failed to download YouTube video")
+            try:
+                # Import the video_utils module for downloading YouTube videos
+                from video_utils import download_youtube_video
+                video_path = download_youtube_video(video_url)
+                if not video_path:
+                    logger.error("Failed to download YouTube video")
+                    return False
+            except ImportError:
+                logger.error("Failed to import download_youtube_video from video_utils")
                 return False
         else:
             # Assume it's a local file path
@@ -478,47 +499,6 @@ def main():
     else:
         logger.error("Pipeline execution failed")
         sys.exit(1)
-
-def download_youtube_video(youtube_url, output_path="input_video.mp4"):
-    """
-    Download a YouTube video using yt-dlp
-    
-    Args:
-        youtube_url (str): YouTube URL to download
-        output_path (str): Path to save the downloaded video
-        
-    Returns:
-        str: Path to the downloaded video or None if unsuccessful
-    """
-    try:
-        # Check if yt-dlp is installed
-        if shutil.which("yt-dlp") is None:
-            logger.error("yt-dlp is not installed. Please install it with: pip install yt-dlp")
-            return None
-            
-        # Use yt-dlp to download the video
-        cmd = [
-            "yt-dlp", 
-            "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4", 
-            "-o", output_path,
-            youtube_url
-        ]
-        
-        subprocess.run(cmd, check=True)
-        
-        if os.path.exists(output_path):
-            logger.info(f"Successfully downloaded YouTube video to {output_path}")
-            return output_path
-        else:
-            logger.error("Failed to download YouTube video")
-            return None
-            
-    except subprocess.CalledProcessError as e:
-        logger.error(f"Error downloading YouTube video: {e}")
-        return None
-    except Exception as e:
-        logger.error(f"Unexpected error when downloading YouTube video: {e}")
-        return None
 
 if __name__ == "__main__":
     main()

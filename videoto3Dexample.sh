@@ -1,6 +1,8 @@
 #!/bin/bash
 # Run video-to-3D pipeline in custom TRELLIS container
 
+module reset # Start fresh
+
 # Load necessary modules
 module load gcc/11.2.0
 module load cuda/12.2
@@ -9,6 +11,9 @@ module load tacc-apptainer
 
 # Ensure correct directory
 cd $SCRATCH/x2sim
+
+# Container path
+export CONTAINER_PATH="$SCRATCH/x2sim/trellis.sif"
 
 # Source environment variables
 source credentials.sh
@@ -60,7 +65,7 @@ apptainer exec --cleanenv --no-home --nv \
     --bind "$SCRATCH/x2sim:/code" \
     --bind "$FRAMES_DIR:$FRAMES_DIR" \
     --writable-tmpfs \
-    $SCRATCH/x2sim/trellis.sif \
+    $CONTAINER_PATH \
     /usr/bin/python3 /code/TRELLIS/run_x2sim.py "$FRAMES_DIR"
 
 # Check if output file was generated

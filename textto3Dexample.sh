@@ -11,6 +11,9 @@ module load tacc-apptainer
 # Ensure correct directory
 cd $SCRATCH/x2sim
 
+# Container path
+export CONTAINER_PATH="$SCRATCH/x2sim/trellis.sif"
+
 # Source environment variables
 source credentials.sh
 
@@ -50,5 +53,5 @@ apptainer exec --cleanenv --no-home --nv \
   --bind "$SCRATCH/cache/huggingface:/root/.cache/huggingface" \
   --bind "$SCRATCH/x2sim:/code" \
   --writable-tmpfs \
-  $SCRATCH/x2sim/trellis.sif \
-  /usr/bin/python3 /code/TRELLIS/example_text_to_3D.py "$TEXT_PROMPT"
+  $CONTAINER_PATH \
+  /usr/bin/python3 /code/TRELLIS/run_x2sim.py "$TEXT_PROMPT"

@@ -6,7 +6,7 @@ import random
 import pandas as pd
 from typing import Union
 import open3d as o3d
-
+import os
 import engine.mpm_solver
 
 
@@ -309,9 +309,9 @@ def animation_from_npz(
                 mp4_path, 
                 writer='ffmpeg', 
                 fps=10, 
-                dpi=100,
-                extra_args=['-vcodec', 'libx264', '-pix_fmt', 'yuv420p']
-            )
+                dpi=100)#,
+                #fargs=['-vcodec', 'libx264', '-pix_fmt', 'yuv420p']
+            #)
             print(f"Animation saved to: {mp4_path}")
         except Exception as mp4_err:
             print(f"Error saving MP4: {mp4_err}")
@@ -560,9 +560,9 @@ def animation_from_npy(npy_path, save_dir, boundaries=None, timestep_stride=5, m
             mp4_path, 
             writer='ffmpeg', 
             fps=10, 
-            dpi=100,
-            extra_args=['-vcodec', 'libx264', '-pix_fmt', 'yuv420p']
-        )
+            dpi=100)#,
+        #    fargs=['-vcodec', 'libx264', '-pix_fmt', 'yuv420p']
+        #)
         
         # Also save as GIF for easier viewing
         gif_path = os.path.join(save_dir, f"{base_name}.gif")

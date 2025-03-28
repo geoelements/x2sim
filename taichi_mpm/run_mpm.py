@@ -337,7 +337,7 @@ def run_collision(i, inputs, follow_taichi_coord, args=None):
         if i % inputs["visualization"]["skip"] == 0:
             try:
                 # Try to generate animation from NPZ if it exists
-                if os.path.exists(npz_path):
+                if os.path.exists(npz_path) and os.path.exists(npy_path)==0:
                     utils.animation_from_npz(
                         path=save_path,
                         npz_name=f"trajectory{i}",
@@ -355,7 +355,7 @@ def run_collision(i, inputs, follow_taichi_coord, args=None):
                         if hasattr(utils, 'animation_from_npy'):
                             utils.animation_from_npy(
                                 npy_path=npy_path,
-                                save_name=os.path.join(save_path, f"trajectory{i}"),
+                                save_dir=save_path#save_dir=os.path.join(save_path, f"trajectory{i}"),
                                 boundaries=sim_space,
                                 timestep_stride=5
                             )

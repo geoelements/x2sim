@@ -1,0 +1,56 @@
+
+Lmod is automatically replacing "intel/19.1.1" with "gcc/11.2.0".
+
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) impi/19.0.9     2) python3/3.9.7
+
+INFO:    Converting OCI blobs to SIF format
+INFO:    Starting build...
+Getting image source signatures
+Copying blob sha256:f73ff9d3e11f777b3b371c3be4315857e10ce1525884761c4aa17c2d0f9eb002
+Copying blob sha256:eb68083c7fb9d528128ca021e18542cd4ef6adf084a12d0d882933d3dd67ca52
+Copying blob sha256:aece8493d3972efa43bfd4ee3cdba659c0f787f8f59c82fb3e48c87cbb22a12e
+Copying blob sha256:84a7aba840811cda09b6b0d6a38b76e50d1759e02fb2729a587cad46c01c8a15
+Copying blob sha256:0a05696cb0bcc6979d6c19231178c8d0907fab3c014f1fb70e230621b9c62bc0
+Copying blob sha256:8c66a4da03d6f9e08b3e5c0fe058c8f12207e85c02325b4f0fdfc9cd8d6b2b7c
+Copying blob sha256:21f78659429e9b11b13429fe0c35805ba23388394d472234f5301661771a64f0
+Copying blob sha256:545c22d07ad09f37aba66cdbb7ec9fad9494973ec3356115461b476873f65407
+Copying blob sha256:8a5d5207a26568af9a26418c9e209596ea8a12db21bfc607c002e03ed30dc804
+Copying blob sha256:17102eb4b2388a2f454037f23bc57d5929e22435fc52f614bec4d1b5dfb3033f
+Copying blob sha256:a6464af1693376ac04cc590ec3ac380f9a9c65ede295dac05c0162dc42c3fa2d
+Copying blob sha256:69a8c1eb97602dd7fc1c91eaaeddf1e02b5c62f5a42b790259fec25d0df43a5e
+Copying blob sha256:acb08e44543e50f67077864b3767a23d4b740f854fe5e6ee2c586602b2444f35
+Copying blob sha256:f57364a05f29a0987a7a3dbfa42bb45c7ffef79a31d98795975cadb7665f0dce
+Copying blob sha256:e541de771be37279f3072d80eadef8977f9a304b35072b5afeaa6f996e998f5f
+Copying blob sha256:508d832cdf215a086af60415c1d99592558f8f75798b80b19163f64238ed6061
+Copying blob sha256:17131d33e2de8ee77c41cd97bb76bcac0d6f1fd135cbeaaa78ef1a0b503bef5b
+Copying config sha256:e91b62e075c18d48ceaa50cd476f546ffa89782f5ac95f57b322ece6d3d7f616
+Writing manifest to image destination
+Storing signatures
+2025/03/24 14:56:49  info unpack layer: sha256:aece8493d3972efa43bfd4ee3cdba659c0f787f8f59c82fb3e48c87cbb22a12e
+2025/03/24 14:56:50  info unpack layer: sha256:eb68083c7fb9d528128ca021e18542cd4ef6adf084a12d0d882933d3dd67ca52
+2025/03/24 14:56:50  info unpack layer: sha256:8c66a4da03d6f9e08b3e5c0fe058c8f12207e85c02325b4f0fdfc9cd8d6b2b7c
+2025/03/24 14:56:51  info unpack layer: sha256:0a05696cb0bcc6979d6c19231178c8d0907fab3c014f1fb70e230621b9c62bc0
+2025/03/24 14:56:51  info unpack layer: sha256:84a7aba840811cda09b6b0d6a38b76e50d1759e02fb2729a587cad46c01c8a15
+2025/03/24 14:56:51  info unpack layer: sha256:f73ff9d3e11f777b3b371c3be4315857e10ce1525884761c4aa17c2d0f9eb002
+2025/03/24 14:57:10  info unpack layer: sha256:21f78659429e9b11b13429fe0c35805ba23388394d472234f5301661771a64f0
+2025/03/24 14:57:10  info unpack layer: sha256:545c22d07ad09f37aba66cdbb7ec9fad9494973ec3356115461b476873f65407
+2025/03/24 14:57:10  info unpack layer: sha256:8a5d5207a26568af9a26418c9e209596ea8a12db21bfc607c002e03ed30dc804
+2025/03/24 14:57:10  info unpack layer: sha256:17102eb4b2388a2f454037f23bc57d5929e22435fc52f614bec4d1b5dfb3033f
+2025/03/24 14:57:46  info unpack layer: sha256:a6464af1693376ac04cc590ec3ac380f9a9c65ede295dac05c0162dc42c3fa2d
+2025/03/24 14:57:46  info unpack layer: sha256:69a8c1eb97602dd7fc1c91eaaeddf1e02b5c62f5a42b790259fec25d0df43a5e
+2025/03/24 14:57:47  info unpack layer: sha256:acb08e44543e50f67077864b3767a23d4b740f854fe5e6ee2c586602b2444f35
+2025/03/24 14:57:47  info unpack layer: sha256:f57364a05f29a0987a7a3dbfa42bb45c7ffef79a31d98795975cadb7665f0dce
+2025/03/24 14:57:49  info unpack layer: sha256:e541de771be37279f3072d80eadef8977f9a304b35072b5afeaa6f996e998f5f
+2025/03/24 14:57:50  info unpack layer: sha256:508d832cdf215a086af60415c1d99592558f8f75798b80b19163f64238ed6061
+2025/03/24 14:58:13  info unpack layer: sha256:17131d33e2de8ee77c41cd97bb76bcac0d6f1fd135cbeaaa78ef1a0b503bef5b
+2025/03/24 14:58:15  warn rootless{root/.cache/packman/python/3.10.5-1-linux-x86_64/bin/python3} ignoring (usually) harmless EPERM on setxattr "user.rootlesscontainers"
+2025/03/24 14:58:15  warn rootless{root/.cache/packman/python/3.10.5-1-linux-x86_64/bin/python3-config} ignoring (usually) harmless EPERM on setxattr "user.rootlesscontainers"
+2025/03/24 14:58:15  warn rootless{root/.cache/packman/python/3.10.5-1-linux-x86_64/lib/libpython3.10.so} ignoring (usually) harmless EPERM on setxattr "user.rootlesscontainers"
+2025/03/24 14:58:16  warn rootless{root/.cache/packman/python/3.10.5-1-linux-x86_64/lib/pkgconfig/python3-embed.pc} ignoring (usually) harmless EPERM on setxattr "user.rootlesscontainers"
+2025/03/24 14:58:16  warn rootless{root/.cache/packman/python/3.10.5-1-linux-x86_64/lib/pkgconfig/python3.pc} ignoring (usually) harmless EPERM on setxattr "user.rootlesscontainers"
+2025/03/24 14:58:16  warn rootless{root/.cache/packman/python/3.10.5-1-linux-x86_64/python} ignoring (usually) harmless EPERM on setxattr "user.rootlesscontainers"
+2025/03/24 14:58:16  warn rootless{root/.cache/packman/python/3.10.5-1-linux-x86_64/python3} ignoring (usually) harmless EPERM on setxattr "user.rootlesscontainers"
+INFO:    Creating SIF file...
+X2Sim job completed at Mon Mar 24 15:00:54 CDT 2025

@@ -189,7 +189,7 @@ git clone --recursive https://github.com/NVIDIA/warp /tmp/extensions/warp
 cd /tmp/extensions/warp
 python3 ./build_lib.py
 cd -
-pip3 install /tmp/extensions/warp --target /usr/local/lib/python3.9/site-packages/
+pip3 install /tmp/extensions/warp --target /usr/local/lib/python3.10/site-packages/
 
 # Install KAOLIN
 mkdir -p /tmp/extensions
@@ -198,7 +198,7 @@ cd /tmp/extensions/kaolin
 pip3 install -r ./tools/build_requirements.txt -r ./tools/viz_requirements.txt -r ./tools/requirements.txt
 python3 ./setup.py develop
 cd -
-pip3 install /tmp/extensions/kaolin --target /usr/local/lib/python3.9/site-packages/
+pip3 install /tmp/extensions/kaolin --target /usr/local/lib/python3.10/site-packages/
 
 # Remove tmp files following install (removes any dynamic link confusion)
 rm -r /tmp/extensions

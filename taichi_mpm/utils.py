@@ -556,11 +556,11 @@ def animation_from_npy(npy_path, save_dir, boundaries=None, timestep_stride=5, m
         mp4_path = os.path.join(save_dir, f"{base_name}.mp4")
         print(f"Saving animation to {mp4_path}")
         
-        ani.save(
-            mp4_path, 
-            writer='ffmpeg', 
-            fps=10, 
-            dpi=100)#,
+       # ani.save(
+       #     mp4_path, 
+       #     writer='ffmpeg', 
+       #     fps=10, 
+       #     dpi=100)#,
         #    fargs=['-vcodec', 'libx264', '-pix_fmt', 'yuv420p']
         #)
         

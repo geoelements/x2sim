@@ -36,12 +36,12 @@ jobs:
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
         with:
-          tool-cache: false
+          tool-cache: true
           android: true
           dotnet: true
-          haskell: false
-          large-packages: false
-          docker-images: false
+          haskell: true
+          large-packages: true
+          docker-images: true
           swap-storage: false    
 
       - name: Set up Docker Buildx

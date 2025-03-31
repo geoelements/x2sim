@@ -7,7 +7,7 @@
 #SBATCH -t 01:00:00                      	# Run time (hh:mm:ss)
 #SBATCH --mail-type=all                  	# Send email at begin and end of job
 #SBATCH --mail-user=XXXX  		# Replace with your email
-#SBATCH -A OTH24002                      	# Project/Allocation name (replace with yours)
+#SBATCH -A XXXXXX                      	# Project/Allocation name (replace with yours)
 
 # Load requisite modules from host
 module load gcc/11.2.0
@@ -48,12 +48,12 @@ if [ $venv_flag == 0 ]; then
 	count=`ls -1 container/*.sif 2>/dev/null | wc -l`
 
         if [ $count == 0  ]; then
-                apptainer pull container/test_x2sim_container_0.2.sif docker://lsmith9003/test_x2sim_container:0.2
+                apptainer pull container/x2sim.sif docker://ghcr.io/geoelements/x2sim:0.1
         else
                 echo "Using existing sif file found in ./container"
         fi
         echo "Running x2sim through docker container"
-        apptainer exec --nv --env OPEN_API_KEY=$OPEN_API_KEY container/test_x2sim_container_0.2.sif python3 x2sim/x2sim.py "$@"
+        apptainer exec --nv --env OPEN_API_KEY=$OPEN_API_KEY container/x2sim.sif python3 x2sim/x2sim.py "$@"
 
 # Option 2: Run x2sim with local virtual environment
 else

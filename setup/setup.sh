@@ -6,7 +6,7 @@ source x2sim-env/bin/activate
 pip3 install -r x2sim/requirements.txt
 
 # Requirements specific to taichi mpm
-pip3 install -r taichi
+pip3 install -r taichi/requirements.txt
 
 # Requirements specific to trellis text-to-3D pipeline
 cd trellis

@@ -355,7 +355,7 @@ def run_collision(i, inputs, follow_taichi_coord, args=None):
                         if hasattr(utils, 'animation_from_npy'):
                             utils.animation_from_npy(
                                 npy_path=npy_path,
-                                save_dir=save_path#save_dir=os.path.join(save_path, f"trajectory{i}"),
+                                save_dir=save_path,#save_dir=os.path.join(save_path, f"trajectory{i}"),
                                 boundaries=sim_space,
                                 timestep_stride=5
                             )

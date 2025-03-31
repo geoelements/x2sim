@@ -436,7 +436,7 @@ def animation_from_npy(npy_path, save_dir, boundaries=None, timestep_stride=5, m
                     ax.set_xlabel("x")
                     ax.set_ylabel("z")
                     ax.set_zlabel("y")
-                    ax.invert_zaxis()
+                    #ax.invert_zaxis()
                     
                     if colorful:
                         scatter = ax.scatter(

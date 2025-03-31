@@ -541,7 +541,7 @@ def animation_from_npy(npy_path, save_dir, boundaries=None, timestep_stride=5, m
             return fig,
         
         # Create animation
-        frame_count = min(30, len(positions[::stride]))  # Limit to 30 frames for file size
+        frame_count = min(100, len(positions[::stride]))  # Limit to 30 frames for file size
         print(f"Creating animation with {frame_count} frames...")
         
         ani = animation.FuncAnimation(

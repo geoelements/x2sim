@@ -12,9 +12,9 @@ import numpy as np
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[logging.FileHandler("x2sim/mpm_sim.log"), logging.StreamHandler()]
+    handlers=[logging.FileHandler("x2sim/mpmsim.log"), logging.StreamHandler()]
 )
-logger = logging.getLogger("mpm_sim")
+logger = logging.getLogger("mpmsim")
 
 # Workaround to access Taichi MPM - Updated path
 current_dir = os.getcwd() #os.path.dirname(os.path.abspath(__file__))

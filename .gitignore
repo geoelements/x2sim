@@ -1,0 +1,32 @@
+# Python cache
+*__pycache__*
+
+# Credentials
+credentials.sh
+*.env
+
+# Environments
+*env*
+
+
+# Logs
+*log*
+*.o*
+*.e*
+
+# Output 
+outputs/*
+x2sim/fluid_simulation.json
+x2sim/inputs.json
+# Jobs
+job*
+
+# Data files
+*.mp4
+*.glb
+*.ply
+*.png
+*.np[zy]
+
+# Container files
+*.sif

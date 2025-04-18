@@ -1,5 +1,5 @@
 {
-    "save_path": "/scratch/10029/jgaucin/gns-mpm-ls6/taichi_mpm_water/test_pc_m_upscale",
+    "save_path": "./taichi_mpm/test_pc/",
     "id_range": [
         0,
         1

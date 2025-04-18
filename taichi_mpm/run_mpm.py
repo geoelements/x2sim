@@ -29,12 +29,13 @@ def run_collision(i, inputs, follow_taichi_coord, args=None):
 
     # init visualizer
     if is_realtime_vis:
-        if ndim == 3:
-            gui = ti.GUI('MPM3D', res=512, background_color=0x112F41)
-        elif ndim == 2:
-            gui = ti.GUI("Taichi Elements", res=512, background_color=0x112F41)
-        else:
-            raise ValueError("`ndim` should be 2 or 3")
+        #if ndim == 3:
+            # gui = ti.GUI('MPM3D', res=512, background_color=0x112F41)
+        #elif ndim == 2:
+            # gui = ti.GUI("Taichi Elements", res=512, background_color=0x112F41)
+        #else:
+            #raise ValueError("`ndim` should be 2 or 3")
+        print(f"Is realtime vis {is_realtime_vis}")
 
     # init MPM solver
     ti.init(arch=ti.cuda, device_memory_GB=6.0)
@@ -215,12 +216,13 @@ def run_collision(i, inputs, follow_taichi_coord, args=None):
                 screen_y = (particles['position'][:, 1])
                 # screen_z = (np_x[:, 2])
                 screen_pos = np.stack([screen_x, screen_y], axis=-1)
-                gui.circles(utils.T(particles['position']), radius=1.5, color=0x66ccff)
-                gui.show()
+                #gui.circles(utils.T(particles['position']), radius=1.5, color=0x66ccff)
+                #gui.show()
             if ndim == 2:
-                gui.circles(particles['position'],
-                            radius=1.5,
-                            color=colors[particles['material']]) # Particle color corresponds to order in color array
+                print(f"ndim={ndim}")
+                #gui.circles(particles['position'],
+                            #radius=1.5,
+                            #color=colors[particles['material']]) # Particle color corresponds to order in color array
     positions = np.stack(positions)
 
     # Change axis of positions (y & z), since the render in matplotlib uses the opposite axis order

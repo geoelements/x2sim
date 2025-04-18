@@ -5,7 +5,6 @@ import subprocess
 import json
 import time
 import argparse
-from dotenv import load_dotenv
 import logging
 import shutil
 from langchain.prompts import PromptTemplate
@@ -25,7 +24,7 @@ logger = logging.getLogger("x2sim")
 
 
 
-# Custom Tool to Generate Point-E Point Cloud
+# Custom tool to generate a point cloud from text
 class TextToPointCloudTool(BaseTool):
     name = "TextToPointCloud"
     description = "Generates a 3D point cloud from a given text object description using TRELLIS to be used in a simulation later."
@@ -76,6 +75,75 @@ class TextToPointCloudTool(BaseTool):
 
 
 
+# Custom tool to generate a point cloud from image(s)
+class ImageToPointCloudTool(BaseTool):
+    name = "ImageToPointCloud"
+    description = "Processes one or more images to create a 3D point cloud for simulation. Can handle a single image file or a directory of images."
+
+    def _run(self, image_path: str) -> str:
+        """
+        Process a single image or directory of images to generate a point cloud.
+        
+        Args:
+            image_path (str): Path to an image file (.png) or directory containing images
+        """
+        logger.info(f"Processing image to point cloud: {image_path}")
+        
+        try:
+            # Check if input is a valid path
+            if not os.path.exists(image_path):
+                logger.error(f"Image path not found: {image_path}")
+                return f"Error: Image path not found: {image_path}"
+            
+            # Run the TRELLIS script to process the image(s)
+            logger.info(f"Running TRELLIS on image path: {image_path}")
+            
+            # Run the script with the image path
+            result = subprocess.run(
+                ["python3", "trellis/run_trellis.py", image_path],
+                shell=False,
+                check=False,
+                capture_output=True,
+                text=True
+            )
+            
+            # Check if the script execution was successful
+            if result.returncode != 0:
+                logger.error(f"TRELLIS processing failed: {result.stderr}")
+                return f"Error: TRELLIS processing failed. Check logs for details."
+            
+            # Check if output file exists - First check the outputs directory
+            output_file = os.path.join(os.getcwd(), "outputs/sample.ply")
+            if not os.path.exists(output_file):
+                logger.error(f"3D model file not found at: {output_file}")
+                return f"Error: 3D model file not found at {output_file}"
+            
+            # Copy or link the file to preprocessed.ply in the outputs directory for MPM simulation
+            destination_file = os.path.join(os.getcwd(), "outputs/preprocessed.ply")
+            subprocess.run(["cp", output_file, destination_file], check=True)
+            logger.info(f"Copied 3D model to {destination_file}")
+            
+            # Determine if we processed a single image or multiple images
+            if os.path.isdir(image_path):
+                image_files = [f for f in os.listdir(image_path) if f.endswith('.png')]
+                return f"Successfully processed {len(image_files)} images to create a 3D point cloud. File saved to {destination_file}"
+            else:
+                return f"Successfully processed image to create a 3D point cloud. File saved to {destination_file}"
+            
+        except Exception as e:
+            logger.error(f"Error in image to point cloud processing: {str(e)}")
+            return f"Error processing image: {str(e)}"
+
+    async def _arun(self, image_path: str) -> str:
+        """Asynchronous version, not implemented."""
+        raise NotImplementedError("ImageToPointCloud does not support async")
+
+
+
+
+    
+
+# Custom tool to generate a point cloud from a video
 class VideoToPointCloudTool(BaseTool):
     name = "VideoToPointCloud"
     description = "Processes a YouTube video URL or local video file to extract frames and create a 3D point cloud for simulation."
@@ -124,7 +192,7 @@ class VideoToPointCloudTool(BaseTool):
             )
 
             # Copy or link the file to preprocessed.ply in the current directory for MPM simulation
-            output_file = os.path.join(os.getcwd(), "outpts/sample.ply")
+            output_file = os.path.join(os.getcwd(), "outputs/sample.ply")
             if not os.path.exists(output_file):
                 logger.error(f"3D model file not found at: {output_file}")
                 return f"Error: 3D model file not found at {output_file}"
@@ -252,29 +320,31 @@ def setup_agent():
         return None
     
     # Define the LLM
-    llm = ChatOpenAI(temperature=0, openai_api_key=api_key, model_name="gpt-4")
+    llm = ChatOpenAI(temperature=0, openai_api_key=api_key, model_name="gpt-4o")
     
     # Create tool instances
     text_to_pc_tool = TextToPointCloudTool()
     video_pc_tool = VideoToPointCloudTool()
+    image_pc_tool = ImageToPointCloudTool()  # Add new image tool
     fluid_simulation_tool = FluidSimulationTool()
     mpm_sim_tool = MPMSimulationTool()
     
     # Define tools available to the agent
-    tools = [text_to_pc_tool, video_pc_tool, fluid_simulation_tool, mpm_sim_tool]
+    tools = [text_to_pc_tool, video_pc_tool, image_pc_tool, fluid_simulation_tool, mpm_sim_tool]  # Add image tool
     
     # Create the REACT agent's prompt
     agent_prompt = PromptTemplate.from_template(
-        "You are an assistant capable of running two types of simulations: Text-to-3D and Video-to-3D simulations. " +
+        "You are an assistant capable of running three types of simulations: Text-to-3D, Video-to-3D, and Image-to-3D simulations. " +
         "You have access to the following tools:\n" +
         "{tool_names}\n\n" +
         "Here are the descriptions of the tools:\n" +
         "{tools}\n\n" +
         "Based on the user's input, decide which simulation to run. " +
         "If any of the scripts fail, mention there was an error in the script.\n" +
-        "If the input mentions generating 3D objects or scenes without mentioning a video, ALWAYS use the TextToPointCloud tool. " +
-        "If the input specifically mentions processing a video, use the VideoToPointCloud tool.\n\n" +
-        "CRITICAL INSTRUCTION: After successfully using either the TextToPointCloud or VideoToPointCloud tool, " +
+        "If the input mentions generating 3D objects or scenes without mentioning a video or image, ALWAYS use the TextToPointCloud tool. " +
+        "If the input specifically mentions processing a video, use the VideoToPointCloud tool.\n" +
+        "If the input specifically mentions processing an image or images, use the ImageToPointCloud tool.\n\n" +
+        "CRITICAL INSTRUCTION: After successfully using either the TextToPointCloud, VideoToPointCloud, or ImageToPointCloud tool, " +
         "you MUST ALWAYS use the FluidSimulation tool and MPMSimulation tool sequentially on the generated point cloud. This is a mandatory step. " +
         "You can use these tools to help answer the following question: {input}\n\n" +
         "To use a tool, please use the following format:\n" +
@@ -290,6 +360,7 @@ def setup_agent():
         "User Input: 'Generate a blue truck to be used in a simulation later.'\n" +
         "Correct Action Input: 'A blue truck'\n\n" +
         "Always extract just the object or scene description for the TextToPointCloud tool.\n" +
+        "IMPORTANT: When using the ImageToPointCloud tool, the Action Input should be the path to the image file or directory of images.\n" +
         "IMPORTANT: When using the FluidSimulation tool, the Action Input should be brief description of the water direction, NOT the entire user input. "+
         "For example:\n" +
         "User Input: 'Generate a tall building being hit with water from top'" +
@@ -315,13 +386,15 @@ def setup_agent():
 
 
 
-def run_agent_pipeline(input_data, use_video=False, video_url=None):
+def run_agent_pipeline(input_data, use_video=False, video_url=None, use_image=False, image_path=None):
     """Run the agent-based pipeline
     
     Args:
         input_data (str): The prompt or description for the simulation
         use_video (bool): Whether to use video processing instead of text-to-3D
         video_url (str, optional): URL or path of the video to process if use_video is True
+        use_image (bool): Whether to use image processing instead of text-to-3D
+        image_path (str, optional): Path to image file or directory of images if use_image is True
     
     Returns:
         bool: Whether the pipeline execution was successful
@@ -356,9 +429,20 @@ def run_agent_pipeline(input_data, use_video=False, video_url=None):
                 logger.error(f"Video file not found: {video_path}")
                 return False
     
+    # Handle image path if specified
+    if use_image and image_path:
+        if not os.path.exists(image_path):
+            logger.error(f"Image path not found: {image_path}")
+            return False
+    
     # Prepare the prompt based on the mode
     if use_video and video_path:
         prompt = f"Process this video: {video_path} and simulate it with {input_data}"
+    elif use_image and image_path:
+        if os.path.isdir(image_path):
+            prompt = f"Process these images in directory: {image_path} and simulate it with {input_data}"
+        else:
+            prompt = f"Process this image: {image_path} and simulate it with {input_data}"
     else:
         prompt = input_data
     
@@ -388,13 +472,15 @@ def run_agent_pipeline(input_data, use_video=False, video_url=None):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="x2sim - Text/Video to 3D to Simulation Pipeline with Agent-Based Approach")
-    # Create a group for input source (text or video)
+    parser = argparse.ArgumentParser(description="x2sim - Text/Video/Image to 3D to Simulation Pipeline with Agent-Based Approach")
+    # Create a group for input source (text, video, or image)
     input_group = parser.add_mutually_exclusive_group()
     input_group.add_argument("--prompt", type=str, 
                         help="Text prompt describing the object and fluid simulation")
     input_group.add_argument("--video", type=str,
                         help="URL or path to a video file to process")
+    input_group.add_argument("--image", type=str,
+                        help="Path to an image file (.png) or directory containing image files to process")
     
     # Fluid direction argument
     parser.add_argument("--direction", type=str, default="from the front",
@@ -404,17 +490,18 @@ def main():
     parser.add_argument("--use-venv", action="store_true", 
                         help="Virtual environment activation")
     parser.add_argument("--object", type=str,
-                        help="Override the object description (used with --video)")
+                        help="Override the object description (used with --video or --image)")
     
     args = parser.parse_args()
     
     # Handle the case where no arguments are provided
-    if not args.prompt and not args.video:
+    if not args.prompt and not args.video and not args.image:
         parser.print_help()
         sys.exit(1)
     
     # Prepare the input for the agent pipeline
     use_video = bool(args.video)
+    use_image = bool(args.image)
     
     # Determine the prompt
     if args.prompt:
@@ -423,11 +510,15 @@ def main():
         input_text = f"Generate a {args.object} being hit with water {args.direction}"
     elif args.video:
         input_text = f"Generate an object being hit with water {args.direction}"
+    elif args.image and args.object:
+        input_text = f"Generate a {args.object} being hit with water {args.direction}"
+    elif args.image:
+        input_text = f"Generate an object being hit with water {args.direction}"
     else:
         input_text = "Generate a house being hit with a wave from the front"
     
     # Run the agent-based pipeline
-    success = run_agent_pipeline(input_text, use_video, args.video)
+    success = run_agent_pipeline(input_text, use_video, args.video, use_image, args.image)
     
     if success:
         logger.info("Pipeline executed successfully")

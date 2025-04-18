@@ -1,6 +1,6 @@
 # If --env flag is set, setup and activate a virtual environment
-python3 -m venv x2sim-env
-source x2sim-env/bin/activate
+python3 -m venv x2sim_env
+source x2sim_env/bin/activate
 
 # Requirements specific to x2sim
 pip3 install -r x2sim/requirements.txt

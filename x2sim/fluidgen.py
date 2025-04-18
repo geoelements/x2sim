@@ -6,7 +6,6 @@ from langchain.prompts import PromptTemplate
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain_openai import ChatOpenAI
 from langchain.tools.base import BaseTool
-from dotenv import load_dotenv
 import subprocess
 import os
 import json

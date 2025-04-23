@@ -7,8 +7,8 @@
 #SBATCH -n 1                                    # Total # of mpi tasks
 #SBATCH -t 01:00:00                             # Run time (hh:mm:ss)
 #SBATCH --mail-type=all                         # Send email at begin and end of job
-#SBATCH --mail-user=smithl@tacc.utexas.edu              # Replace with your email
-#SBATCH -A OTH24002                             # Project/Allocation name (replace with yours)
+#SBATCH --mail-user=XXXX              # Replace with your email
+#SBATCH -A XXXXXXXX                             # Project/Allocation name (replace with yours)
 
 # Load requisite modules from host
 module load gcc/11.2.0

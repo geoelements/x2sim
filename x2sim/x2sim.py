@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# x2sim/x2sim.py
 import os
 import sys
 import subprocess

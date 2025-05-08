@@ -1,3 +1,7 @@
+# trellis/run_trellis.py
+""" This script runs the TRELLIS pipeline for 3D generation. It takes in either a text prompt or an image as input and generates a 3D model as output.
+The script is designed to be run from the command line and accepts a single argument: the input text or image.
+The script uses the TRELLIS library to load a pre-trained model and run the pipeline. It also uses the OpenAI API to generate images from text prompts."""
 # Import OS libaries and define backend 
 import os
 import re

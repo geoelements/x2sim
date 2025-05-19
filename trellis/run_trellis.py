@@ -41,7 +41,8 @@ parser.add_argument("text_input")
 args = parser.parse_args()
 
 # Load a pipeline from a model folder or a Hugging Face model hub.
-pipeline = TrellisImageTo3DPipeline.from_pretrained("JeffreyXiang/TRELLIS-image-large")
+#pipeline = TrellisImageTo3DPipeline.from_pretrained("JeffreyXiang/TRELLIS-image-large")
+pipeline = TrellisImageTo3DPipeline.from_pretrained("gqk/TRELLIS-image-large-fork")
 pipeline.cuda()
 
 # Initialize image list

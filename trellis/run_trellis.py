@@ -138,14 +138,14 @@ imageio.mimsave(save_directory+"/outputs/sample_gs.mp4", video, fps=30)
 #imageio.mimsave(save_directory+"/sample_mesh.mp4", video, fps=30)
 
 # GLB files can be extracted from the outputs
-#glb = postprocessing_utils.to_glb(
-#    outputs['gaussian'][0],
-#    outputs['mesh'][0],
-#    # Optional parameters
-#    simplify=0.95,          # Ratio of triangles to remove in the simplification process
-#    texture_size=1024,      # Size of the texture used for the GLB
-#)
-#glb.export(save_directory+"/sample.glb")
+glb = postprocessing_utils.to_glb(
+    outputs['gaussian'][0],
+    outputs['mesh'][0],
+    # Optional parameters
+    simplify=0.95,          # Ratio of triangles to remove in the simplification process
+    texture_size=1024,      # Size of the texture used for the GLB
+)
+glb.export(save_directory+"/outputs/sample.glb")
 
 # Save Gaussians as PLY files
 outputs['gaussian'][0].save_ply(save_directory+"/outputs/sample.ply")

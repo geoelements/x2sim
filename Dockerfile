@@ -1,3 +1,6 @@
+# Dockerfile for x2sim with trellis support
+# Last build triggered on: 2025-06-25
+
 FROM nvidia/cuda:12.2.2-devel-ubuntu22.04
 
 

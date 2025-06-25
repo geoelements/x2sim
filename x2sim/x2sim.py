@@ -49,7 +49,7 @@ class TextToPointCloudTool(BaseTool):
             logger.info("3D model generation completed")
             
             # Check if output file exists - ONLY check the current working directory
-            output_file = os.path.join(os.getcwd(), "outputs/sample.ply")
+            output_file = os.path.join(os.getcwd(), "outputs/sample_gaussian.ply")
             if not os.path.exists(output_file):
                 logger.error(f"3D model file not found at: {output_file}")
                 return f"Error: 3D model file not found at {output_file}"
@@ -114,7 +114,7 @@ class ImageToPointCloudTool(BaseTool):
                 return f"Error: TRELLIS processing failed. Check logs for details."
             
             # Check if output file exists - First check the outputs directory
-            output_file = os.path.join(os.getcwd(), "outputs/sample.ply")
+            output_file = os.path.join(os.getcwd(), "outputs/sample_gaussian.ply")
             if not os.path.exists(output_file):
                 logger.error(f"3D model file not found at: {output_file}")
                 return f"Error: 3D model file not found at {output_file}"
@@ -193,7 +193,7 @@ class VideoToPointCloudTool(BaseTool):
             )
 
             # Copy or link the file to preprocessed.ply in the current directory for MPM simulation
-            output_file = os.path.join(os.getcwd(), "outputs/sample.ply")
+            output_file = os.path.join(os.getcwd(), "outputs/sample_gaussian.ply")
             if not os.path.exists(output_file):
                 logger.error(f"3D model file not found at: {output_file}")
                 return f"Error: 3D model file not found at {output_file}"

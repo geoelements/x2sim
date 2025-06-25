@@ -1,150 +1,115 @@
-# trellis/run_trellis.py
-""" This script runs the TRELLIS pipeline for 3D generation. It takes in either a text prompt or an image as input and generates a 3D model as output.
-The script is designed to be run from the command line and accepts a single argument: the input text or image.
-The script uses the TRELLIS library to load a pre-trained model and run the pipeline. It also uses the OpenAI API to generate images from text prompts."""
-# Import OS libaries and define backend 
-import os
-import re
-import sys
+#!/usr/bin/env python3
+# trellis/run_trellis.py  – single-file wrapper to run TRELLIS and save *all* outputs
+#
+# Usage examples
+#   python trellis/run_trellis.py "A wooden toy truck"
+#   python trellis/run_trellis.py ./inputs/photo.png
+#   python trellis/run_trellis.py ./inputs/multi_view_folder/
+#
+# Output hierarchy (created in CWD):
+#   outputs/
+#       sample_gaussian.ply
+#       sample_mesh.obj           (high-poly mesh)
+#       sample.glb                (simplified + textured)
+#       sample_rf_mesh.obj        (mesh marched from radiance-field)
+#       sample_gs.mp4             (turn-table video of Gaussians)
 
-# os.environ['ATTN_BACKEND'] = 'xformers'   # Can be 'flash-attn' or 'xformers', default is 'flash-attn'
-os.environ['SPCONV_ALGO'] = 'native'        # Can be 'native' or 'auto', default is 'auto'.
-                                            # 'auto' is faster but will do benchmarking at the beginning.
-                                            # Recommended to set to 'native' if run only once.
-
-
-sys.path.append('/usr/local/lib/python3.10/site-packages')
-
-# Import libraries for text-to-2D (via DALL-E)
-import openai
-import base64
+import os, re, sys, argparse, base64, json
 from io import BytesIO
+from pathlib import Path
 
-# Import libaries for 2D-to-3D (via TRELLIS) 
-import imageio
+os.environ["SPCONV_ALGO"] = "native"      # safer first-run
+sys.path.append("/usr/local/lib/python3.10/site-packages")
+
+import openai, imageio
 from PIL import Image
+
 from trellis.pipelines import TrellisImageTo3DPipeline
 from trellis.utils import render_utils, postprocessing_utils
 
-# Import libraries for argument parsing
-import argparse
-
-
-
-
-# Parse input arguments
-parser = argparse.ArgumentParser(
-        prog="X-to-3D Pipeline example",
-        description="This code takes in an input, evaluates an LLM, and generates a 3D model as the output. It is currently configured to accept either text (which activates the text-to-3D pipeline) or image (which activates the image-to-3D pipeline) as input."
-        )
-parser.add_argument("text_input")
+# ───────────── CLI ─────────────
+parser = argparse.ArgumentParser(description="TRELLIS X-to-3D wrapper")
+parser.add_argument("input", help="text prompt, image.png or folder/")
+parser.add_argument("--seed", type=int, default=1)
+parser.add_argument("--outdir", default="outputs")
 args = parser.parse_args()
 
-# Load a pipeline from a model folder or a Hugging Face model hub.
-pipeline = TrellisImageTo3DPipeline.from_pretrained("JeffreyXiang/TRELLIS-image-large")
-pipeline.cuda()
+outdir = Path(args.outdir).resolve()
+outdir.mkdir(parents=True, exist_ok=True)
 
-# Initialize image list
-image = []
+# ──────────── Pipeline ─────────
+pipeline = TrellisImageTo3DPipeline.from_pretrained(
+    "gqk/TRELLIS-image-large-fork", # or "JeffreyXiang/TRELLIS-image-large"
+    output_formats=["gaussian", "mesh", "radiance_field"]
+).cuda()
 
-# Input option 1: Single image (activates image-to-3D pipeline)
-if re.search(".png$",args.text_input):
-    image.append(Image.open(args.text_input))
-    #fWrite = open(outTemp.txt,'w')
-    #print('Found png image as input. Activating the image-to-3D pipeline.',file=fWrite)
-    #fWrite.close()
+# ──────── Prepare input image(s) ────────
+img_list: list[Image.Image] = []
 
-# Input option 2: Multi-image (activates multi-image-to-3D pipeline)
-elif os.path.isdir(args.text_input):
-    print('Found directory as input. Looking for images in directory...')   
-    for filename in os.listdir(args.text_input): 
-        if re.search(".png$",filename):
-            image.append(Image.open(args.text_input+'/'+filename))
-    if len(image) > 0:
-        #fWrite = open(outTemp.txt,'w')
-        print('Found ' + str(len(image)) + ' images. Activating the image-to-3D pipeline.')
-        #fWrite.close()
-    else:
-        print('No images found. Exiting...')
-        sys.exit("No PNG images found in input directory.")
+if args.input.lower().endswith(".png"):
+    img_list.append(Image.open(args.input))
 
-# Input option 3: Text (activates the text-to-3D pipeline)
-else:
+elif Path(args.input).is_dir():
+    for p in sorted(Path(args.input).glob("*.png")):
+        img_list.append(Image.open(p))
+    if not img_list:
+        sys.exit("No .png files found in folder")
+
+else:  # assume pure text -> use DALL-E 3 to get a single conditioning image
     client = openai.OpenAI()
-    response = client.images.generate(
+    resp = client.images.generate(
         model="dall-e-3",
-        prompt=args.text_input,
+        prompt=args.input,
         size="1024x1024",
         quality="standard",
         response_format="b64_json",
-        n=1)
-    img_data = response.data[0]
-    img_obj = img_data.model_dump()["b64_json"]
-    img_buffer = BytesIO(base64.b64decode(img_obj))
-    image.append(Image.open(img_buffer))
-    image[0].save('outputs/object2D.png')
-    #fWrite = open(outTemp.txt,'w')
-    #print('Found text string as input. Activating the text-to-3D pipeline.',file=fWrite)
-    #fWrite.close()
-
-
-# Run the pipeline
-if len(image) > 1:
-    outputs = pipeline.run_multi_image(
-        image,
-        seed=1,
-        # Optional parameters
-        # sparse_structure_sampler_params={
-        #     "steps": 12,
-        #     "cfg_strength": 7.5,
-        # },
-        # slat_sampler_params={
-        #     "steps": 12,
-        #     "cfg_strength": 3,
-        # },
+        n=1,
     )
+    img_data = resp.data[0].model_dump()["b64_json"]
+    img = Image.open(BytesIO(base64.b64decode(img_data)))
+    img.save(outdir / "prompt_image.png")
+    img_list.append(img)
+
+# ─────────── Run TRELLIS ───────────
+if len(img_list) > 1:
+    outputs = pipeline.run_multi_image(img_list, seed=args.seed)
 else:
-    outputs = pipeline.run(
-        image[0],
-        seed=1,
-        # Optional parameters
-        # sparse_structure_sampler_params={
-        #     "steps": 12,
-        #     "cfg_strength": 7.5,
-        # },
-        # slat_sampler_params={
-        #     "steps": 12,
-        #     "cfg_strength": 3,
-        # },
-    )
+    outputs = pipeline.run(img_list[0], seed=args.seed)
 
+gaussian   = outputs["gaussian"][0]
+mesh       = outputs["mesh"][0]
+radiance_f = outputs["radiance_field"][0]
 
-# outputs is a dictionary containing generated 3D assets in different formats:
-# - outputs['gaussian']: a list of 3D Gaussians
-# - outputs['radiance_field']: a list of radiance fields
-# - outputs['mesh']: a list of meshes
+# ─────────── Save Gaussian PLY ───────────
+ply_path = outdir / "sample_gaussian.ply"
+gaussian.save_ply(ply_path)
+print(f"Gaussian PLY  -> {ply_path}")
 
-# Render the outputs
-save_directory = os.getcwd()
-#fWrite = open(outTemp.txt,'w')
-#print("Save directory: " + save_directory,file=fWrite)
-#fWrite.close()
-video = render_utils.render_video(outputs['gaussian'][0])['color']
-imageio.mimsave(save_directory+"/outputs/sample_gs.mp4", video, fps=30)
-#video = render_utils.render_video(outputs['radiance_field'][0])['color']
-#imageio.mimsave(save_directory+"/sample_rf.mp4", video, fps=30)
-#video = render_utils.render_video(outputs['mesh'][0])['normal']
-#imageio.mimsave(save_directory+"/sample_mesh.mp4", video, fps=30)
+# ─────────── Save high-poly mesh ─────────
+obj_path = outdir / "sample_mesh.obj"
+mesh.export(obj_path)
+print(f"Mesh OBJ      -> {obj_path}")
 
-# GLB files can be extracted from the outputs
-#glb = postprocessing_utils.to_glb(
-#    outputs['gaussian'][0],
-#    outputs['mesh'][0],
-#    # Optional parameters
-#    simplify=0.95,          # Ratio of triangles to remove in the simplification process
-#    texture_size=1024,      # Size of the texture used for the GLB
-#)
-#glb.export(save_directory+"/sample.glb")
+# ─────────── Simplified textured GLB ─────
+glb_path = outdir / "sample.glb"
+glb = postprocessing_utils.to_glb(
+    gaussian,
+    mesh,
+    # Optional parameters
+    simplify=0.95,     # keep 5 % faces: Ratio of triangles to remove in the simplification process
+    texture_size=1024,  # Size of the texture used for the GLB
+)
+glb.export(glb_path)
+print(f"GLB (textured) -> {glb_path}")
 
-# Save Gaussians as PLY files
-outputs['gaussian'][0].save_ply(save_directory+"/outputs/sample.ply")
+# ─────────── Radiance-Field → Mesh (optional) ─────────
+rf_mesh_path = outdir / "sample_rf_mesh.obj"
+rf_mesh = postprocessing_utils.rf_to_mesh(radiance_f, density_thresh=50.0)
+rf_mesh.export(rf_mesh_path)
+print(f"RF mesh       -> {rf_mesh_path}")
+
+# ─────────── Turn-table render of Gaussians ─────────
+video_path = outdir / "sample_gs.mp4"
+video = render_utils.render_video(gaussian)["color"]
+imageio.mimsave(video_path, video, fps=30)
+print(f"Preview video -> {video_path}")

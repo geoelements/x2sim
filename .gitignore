@@ -34,3 +34,6 @@ job*
 
 # Container files
 *.sif
+
+# Development / Backup files
+*.backup.*

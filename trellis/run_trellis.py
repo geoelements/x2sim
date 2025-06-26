@@ -39,8 +39,7 @@ outdir.mkdir(parents=True, exist_ok=True)
 
 # ──────────── Pipeline ─────────
 pipeline = TrellisImageTo3DPipeline.from_pretrained(
-    "gqk/TRELLIS-image-large-fork", # or "JeffreyXiang/TRELLIS-image-large"
-    output_formats=["gaussian", "mesh", "radiance_field"]
+    "gqk/TRELLIS-image-large-fork" # or "JeffreyXiang/TRELLIS-image-large"
 ).cuda()
 
 # ──────── Prepare input image(s) ────────
@@ -72,9 +71,15 @@ else:  # assume pure text -> use DALL-E 3 to get a single conditioning image
 
 # ─────────── Run TRELLIS ───────────
 if len(img_list) > 1:
-    outputs = pipeline.run_multi_image(img_list, seed=args.seed)
+    outputs = pipeline.run_multi_image(img_list, 
+    seed=args.seed,
+    formats=["gaussian", "mesh", "radiance_field"]
+    )
 else:
-    outputs = pipeline.run(img_list[0], seed=args.seed)
+    outputs = pipeline.run(img_list[0], 
+    seed=args.seed,
+    formats=["gaussian", "mesh", "radiance_field"]
+    )
 
 gaussian   = outputs["gaussian"][0]
 mesh       = outputs["mesh"][0]
@@ -102,7 +107,7 @@ glb = postprocessing_utils.to_glb(
 glb.export(glb_path)
 print(f"GLB (textured) -> {glb_path}")
 
-# ─────────── Radiance-Field → Mesh (optional) ─────────
+# ─────────── Radiance-Field -> Mesh (optional) ─────────
 rf_mesh_path = outdir / "sample_rf_mesh.obj"
 rf_mesh = postprocessing_utils.rf_to_mesh(radiance_f, density_thresh=50.0)
 rf_mesh.export(rf_mesh_path)
